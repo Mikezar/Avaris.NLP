@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using Avaris.NLP.SyntaxAnalyzer;
+using Avaris.NLP.SyntaxAnalyzer.EarleyParser;
 using Avaris.NLP.SyntaxAnalyzer.SentenceDetector;
 using Avaris.NLP.SyntaxAnalyzer.Normalization;
 using Avaris.NLP.SyntaxAnalyzer.IO;
@@ -16,13 +19,44 @@ namespace Avaris.NLP.Console
             ConsoleTextReader reader = new ConsoleTextReader();
             //var output = reader.TextReader(text);
             Task<string> output = reader.TextReaderFromFileAsync(@"C:\Users\Mike\Desktop\TestWord.txt");
-            ISentenceDetector detector = new SentenceDetector(new TextContext(output.Result + "  "), new Sentence(), new Normalization());
+           // ISentenceDetector detector = new SentenceDetector(new TextContext(output.Result + "  "), new Sentence(), new Normalization());
 
-            var sentences = detector.EOSDetector();
 
-            ITextWriter write = new ConsoleTextWriter();
-            write.FileWriter(sentences);
+            String[] sentence1 = {"John", "called", "Mary"};
+            String[] sentence2 =  {"John", "called", "Mary", "from", "Denver"};
+            Grammar grammar = new SimpleGrammar();
+            EarleyParser parser = new EarleyParser(grammar);
+            test(sentence1, parser);
+            test(sentence2, parser);
+            //var sentences = detector.EOSDetector();
+
+            //ITextWriter write = new ConsoleTextWriter();
+            //write.FileWriter(sentences);
             System.Console.ReadLine();
         }
+
+        static void test(String[] sent,EarleyParser parser)
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < sent.Length - 1; i++)
+                builder.Append(sent[i] + " ");
+            builder.Append(sent[sent.Length - 1] + ".");
+            String sentence = builder.ToString();
+            System.Console.WriteLine(
+           "\nSentence: \"" + sentence + "\"");
+            bool successful =
+            parser.EarleyParse(sent);
+            System.Console.WriteLine(
+           "Parse Successful:" + successful);
+            State[] charts = parser.GetCharts();
+            System.Console.WriteLine("");
+            System.Console.WriteLine(
+            "Charts produced by the sentence\"" + sentence + "\"");
+            for (int i = 0; i < charts.Length; i++)
+            {
+                System.Console.WriteLine("Chart " + i + ":");
+                System.Console.WriteLine(charts[i]);
+            }
+        }
     }
 }

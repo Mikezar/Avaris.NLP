@@ -22,10 +22,10 @@ namespace Avaris.NLP.SyntaxAnalyzer.IO
                 builder.AppendLine(t);
             }
 
-            Writer(builder.ToString());
+            Console.WriteLine(builder.ToString());
         }
 
-        public async void FileWriter(string output)
+        public async void FileWriterAsync(string output)
         {
             var date = DateTime.Today;
             string filename = $"AvarisOutput_{date.Day}_{date.Month}_{date.Year}";
@@ -40,7 +40,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.IO
             Console.WriteLine($"The text was successfully written to the file {filename}.");
         }
 
-        public void FileWriter(IEnumerable<string> output)
+        public void FileWriterAsync(IEnumerable<string> output)
         {
             var builder = new StringBuilder();
 
@@ -50,7 +50,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.IO
                 builder.AppendLine($"{counter++}. {t}");
             }
 
-            FileWriter(builder.ToString());
+            FileWriterAsync(builder.ToString());
         }
     }
 }

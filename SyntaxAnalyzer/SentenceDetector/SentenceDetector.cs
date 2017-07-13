@@ -36,10 +36,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
                 {
                     CurrentPosition = GetCurrentPosition(CurrentPosition);
 
-                    if (CurrentPosition == -1)
-                    {
-                        break;
-                    }
+                    if (CurrentPosition == -1) break;
                     
                     SymbolAnalyzer(PreviousPosition, CurrentPosition, SpanLength);
                 }
@@ -86,26 +83,20 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
         {
             if (char.IsWhiteSpace(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1]))
             {
-                if (char.IsLower(_text.OriginalText[index - 2]) && !(char.IsDigit(_text.OriginalText[index + 1]) || char.IsDigit(_text.OriginalText[index + 2])))
-                {
-                    return true;
-                }
+                if (char.IsLower(_text.OriginalText[index - 2]) && !(char.IsDigit(_text.OriginalText[index + 1]) || char.IsDigit(_text.OriginalText[index + 2])))  return true;
+
                 return false;
             }
-            else if (char.IsUpper(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1]))
-            {
-                return true;
-            }
+            else if (char.IsUpper(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1])) return true;
+
             return false;
         }
 
         public int GetCurrentPosition(int index)
         {
             int offset = _text.OriginalText.IndexOfAny(_sentence.GetSeparators(), index);
-            if (index == 0)
-            {
-                return offset;
-            }
+            if (index == 0) return offset;
+
             PreviousPosition = offset + 1;
             if (offset == -1) return -1;
 

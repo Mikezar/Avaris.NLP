@@ -10,7 +10,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.IO
     {
         void Writer(string output);
         void Writer(IEnumerable<string> output);
-        void FileWriter(string output);
-        void FileWriter(IEnumerable<string> output);
+        void FileWriterAsync(string output);
+        void FileWriterAsync(IEnumerable<string> output);
     }
 }
