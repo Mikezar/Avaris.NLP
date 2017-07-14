@@ -26,6 +26,6 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         public ICollection<Production> Productions => NonTerminals.Keys;
 
-        public override bool IsTerminal => true;
+     //   public override bool IsTerminal => true;
     }
 }

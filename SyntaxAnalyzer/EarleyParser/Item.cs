@@ -12,26 +12,30 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         private readonly int _currentPosition;
 
-        private readonly  State _parentState;
+        private readonly  StateSet _parentState;
+        private const string DOT = "@";
+        private int index = -1;
+        private bool hasDot = false;
 
-        public Item(Production production, State state) : this(production,state, 0) { }
+        public Item(Production production, StateSet state) : this(production,state, 0) { }
 
-        public Item(Production production, State state, int currentPosition)
+        public Item(Production production, StateSet state, int currentPosition)
         {
             _production = production;
             _parentState = state;
             _currentPosition = currentPosition;
         }
 
-        public Item PreviousItem => new Item(_production, _parentState, _currentPosition - 1);
+        public Item PreviousItem => new Item(_production, _parentState, Production.GetBeforePointerPosition());
 
-        public Item NextItem => new Item(_production, _parentState, _currentPosition + 1);
+        public Item NextItem => new Item(_production, _parentState, Production.GetAfterPointerPosition());
+
 
         public Production Production => _production;
 
         public int CurrentPosition => _currentPosition;
 
-        public State ParentState => _parentState;
+        public StateSet ParentState => _parentState;
 
 
         public override string ToString()

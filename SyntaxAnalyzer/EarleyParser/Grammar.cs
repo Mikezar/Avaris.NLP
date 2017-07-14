@@ -8,21 +8,21 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
     public abstract class Grammar
     {
-        public Dictionary<NonTerminal, Terminal[]> Productions;
+        public Dictionary<string, Terminal[]> Productions;
         public List<string> PartOfSpeech;
 
         protected Grammar()
         {
-            Productions = new Dictionary<NonTerminal, Terminal[]>();
+            Productions = new Dictionary<string, Terminal[]>();
             PartOfSpeech = new List<string>();
         }
 
-        public Terminal[] GetTerminals(NonTerminal lhs)
+        public Terminal[] GetTerminals(string lhs)
         {
             Terminal[] rhs = null;
             if (Productions.ContainsKey(lhs))
             {
-                foreach (KeyValuePair<NonTerminal, Terminal[]> kvp in Productions)
+                foreach (KeyValuePair<string, Terminal[]> kvp in Productions)
                 {
                     if (kvp.Key == lhs)
                     {

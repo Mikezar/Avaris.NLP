@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
-    public class State
+    public class StateSet
     {
         private readonly IList<Item> _chart = new List<Item>();
 

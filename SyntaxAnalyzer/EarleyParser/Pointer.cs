@@ -2,27 +2,31 @@
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
-    public sealed class Pointer
+    public sealed class Pointer : Word
     {
-        private int _fatdot = -1;
+        private int _pointer = -1;
 
-        public int FatDot
+        public int Point
         {
-            get { return _fatdot;}
-            set { _fatdot = value; }
+            get { return _pointer; }
+            set {_pointer = value; }
         }
 
         public Item Item { get; set; }
 
-        public Pointer(int dot, Item item)
+        public Pointer()
         {
-            FatDot = dot;
+
+        }
+        public Pointer(int pointer, Item item)
+        {
+            Point = pointer;
             Item = item;
         }
 
         public override int GetHashCode()
         {
-            return new {FatDot, Item}.GetHashCode();
+            return new {Point, Item}.GetHashCode();
         }
 
         public override bool Equals(Object obj)
@@ -37,11 +41,11 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
             if (obj is String)
             {
-                return FatDot.Equals((String) obj);
+                return Point.Equals((String) obj);
             }
             else if (obj is Terminal)
             {
-                return FatDot.Equals(((Terminal)obj).Value);
+                return Point.Equals(((Terminal)obj).Value);
             }
        
             return false;

@@ -48,7 +48,7 @@ namespace Avaris.NLP.Console
             parser.EarleyParse(sent);
             System.Console.WriteLine(
            "Parse Successful:" + successful);
-            State[] charts = parser.GetCharts();
+            StateSet[] charts = parser.GetCharts();
             System.Console.WriteLine("");
             System.Console.WriteLine(
             "Charts produced by the sentence\"" + sentence + "\"");

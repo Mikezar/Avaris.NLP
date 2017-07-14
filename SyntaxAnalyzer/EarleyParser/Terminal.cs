@@ -29,7 +29,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             return Terminals.Count;
         }
 
-        public override bool IsTerminal => false;
+      //  public override bool IsTerminal => false;
 
 
         //public NonTerminal(String[] t)

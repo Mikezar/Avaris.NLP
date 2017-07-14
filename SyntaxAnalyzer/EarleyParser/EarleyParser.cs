@@ -11,7 +11,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
     {
         private readonly Grammar _grammar;
         private  String[] _sentence;
-        private  State[] _chart;
+        private  StateSet[] _chart;
 
         public EarleyParser(Grammar grammar)
         {
@@ -23,7 +23,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             return _grammar;
         }
 
-        public State[] GetCharts()
+        public StateSet[] GetCharts()
         {
             return _chart;
         }
@@ -32,26 +32,27 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
         {
             if (input == null) throw new NullReferenceException();
             _sentence = input;
-            _chart = new State[_sentence.Length + 1];
+            _chart = new StateSet[_sentence.Length + 1];
 
             //Иницализация состояний
             for (int i = 0; i < _chart.Length; i++)
-                _chart[i] = new State();
+                _chart[i] = new StateSet();
         }
 
         public bool EarleyParse(string[] input)
         {
             Init(input);
 
-            Production production = new Production(new Word[] { new NonTerminal("$"), new Terminal("@"), new Terminal("S") });
-            Item item = new Item(production, new State(), 0);
+            Production production = new Production(new Word[] { new NonTerminal("$"), new Pointer(),  new Terminal("S") });
+            Item item = new Item(production, new StateSet(), 0);
              _chart[0].AddItem(item);
 
 
-            for (int i = 0; i < _sentence.Length; i++)
+            for (int i = 0; i < _chart.Length; i++)
             {
                 for (int state = 0; state < _chart[i].Count; state++)
                 {
+
                     Item currentItem = _chart[i].GetItem(state);
                     Item nextItem = item.NextItem;
 
@@ -59,7 +60,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
                     {
                         if (currentItem.Word is NonTerminal)
                         {
-                            Predictor(currentItem, _chart[i], _grammar);
+                            Predictor(currentItem, _chart[i], state);
                         }
                         else
                         {
@@ -74,8 +75,8 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
                 }
             }
 
-            Production productionF = new Production(new Word[] { new Terminal("@"), new Terminal("S") });
-            Item itemF = new Item(production, new State(), input.Length);
+            Production productionF = new Production(new Word[] { new Terminal("$"), new Terminal("S") });
+            Item itemF = new Item(production, new StateSet(), input.Length);
 
             for (int j = 0; j < _chart[input.Length].Count; j++)
             {
@@ -88,21 +89,23 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             return false;
         }
 
-        public void Predictor(Item item, State state, Grammar grammar )
+        public void Predictor(Item item, StateSet state, int parentState)
         {
-            NonTerminal nonTerminal = item.NextItem.Word as NonTerminal;
+            var nonTerminal = item.NextItem.Word.ToString();
 
-            var terminals = grammar.GetTerminals(nonTerminal);
+            var terminals = _grammar.GetTerminals(nonTerminal);
+
 
             for (int i = 0; i < terminals.Length; i++)
             {
-                Item newItem = new Item(new Production(new Word[] {nonTerminal, terminals[i]}), state, i);
+                var production = new Production(new Word[] {new NonTerminal(nonTerminal), terminals[i]});
+                Item newItem = new Item(production.AddPointer(), state, parentState);
 
-                state.AddItem(newItem);
+                _chart[parentState].AddItem(newItem);
             }
         }
 
-        public void Scanner(Item item, State state, int i)
+        public void Scanner(Item item, StateSet state, int i)
         {
             Terminal terminal = item.Word as Terminal;
 
@@ -113,7 +116,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             }
         }
 
-        public void Completer(Item item, State state)
+        public void Completer(Item item, StateSet state)
         {
             for (int a = 0; a < _chart[item.CurrentPosition].Count; a++)
             {

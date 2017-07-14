@@ -8,7 +8,6 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
     public abstract class Word
     {
-        public abstract bool IsTerminal { get; }
 
     }
 }
