@@ -22,10 +22,10 @@ namespace Avaris.NLP.Console
            // ISentenceDetector detector = new SentenceDetector(new TextContext(output.Result + "  "), new Sentence(), new Normalization());
 
 
-            String[] sentence1 = {"John", "called", "Mary"};
-            String[] sentence2 =  {"John", "called", "Mary", "from", "Denver"};
+            String[] sentence1 = {"John", "called", "an", "annoying", "Mary"};
+            String[] sentence2 =  {"John", "called", "Mary", "in", "Moscow"};
             Grammar grammar = new SimpleGrammar();
-            EarleyParser parser = new EarleyParser(grammar);
+            Recognizer parser = new Recognizer(grammar);
             test(sentence1, parser);
             test(sentence2, parser);
             //var sentences = detector.EOSDetector();
@@ -35,7 +35,7 @@ namespace Avaris.NLP.Console
             System.Console.ReadLine();
         }
 
-        static void test(String[] sent,EarleyParser parser)
+        static void test(String[] sent,Recognizer parser)
         {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < sent.Length - 1; i++)
@@ -45,10 +45,10 @@ namespace Avaris.NLP.Console
             System.Console.WriteLine(
            "\nSentence: \"" + sentence + "\"");
             bool successful =
-            parser.EarleyParse(sent);
+            parser.ParseSentence(sent);
             System.Console.WriteLine(
            "Parse Successful:" + successful);
-            StateSet[] charts = parser.GetCharts();
+            var charts = parser.Charts;
             System.Console.WriteLine("");
             System.Console.WriteLine(
             "Charts produced by the sentence\"" + sentence + "\"");

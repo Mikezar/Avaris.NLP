@@ -1,66 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
-    public class Item
+   public class Item
     {
-        private readonly Production _production;
-
         private readonly int _currentPosition;
+        private readonly int _index;
+        private readonly string _nonTerminal;
+        private readonly Production _terminal;
 
-        private readonly  StateSet _parentState;
-        private const string DOT = "@";
-        private int index = -1;
-        private bool hasDot = false;
-
-        public Item(Production production, StateSet state) : this(production,state, 0) { }
-
-        public Item(Production production, StateSet state, int currentPosition)
+        public Item(string nonTerminal, Production terminal, int currentPosition, int index)
         {
-            _production = production;
-            _parentState = state;
+            _nonTerminal = nonTerminal;
+            _terminal = terminal;
             _currentPosition = currentPosition;
+            _index = index;
         }
-
-        public Item PreviousItem => new Item(_production, _parentState, Production.GetBeforePointerPosition());
-
-        public Item NextItem => new Item(_production, _parentState, Production.GetAfterPointerPosition());
-
-
-        public Production Production => _production;
 
         public int CurrentPosition => _currentPosition;
 
-        public StateSet ParentState => _parentState;
+        public int Index => _index;
 
+        public string NonTerminal => _nonTerminal;
+
+        public Production Terminal => _terminal;
+
+        public string NextItem => _terminal.GetTerminalAfterDot();
+
+        public string PreviousItem => _terminal.GetTerminalBeforeDot();
+
+        public bool IsAtEnd => _terminal.IsAtEnd();
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return this == null;
+
+            Item item = (Item)obj;
+            bool part1 = _nonTerminal.CompareTo(item.NonTerminal) == 0;
+            bool part2 = _terminal.Equals(item.Terminal);
+
+            return part1 && part2 && _currentPosition == item.CurrentPosition && _index == item.Index;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
         public override string ToString()
         {
-            return _production.Words[_currentPosition].ToString();
+            return $"{_nonTerminal} -> {_terminal.ToString()} ({_currentPosition}) ({_index})";
         }
-
-        public Word Word
-        {
-            get
-            {
-                if(IsAtEnd()) throw new InvalidOperationException();
-                return Production.Words.ElementAt(CurrentPosition);
-            }
-        }
-
-        public bool IsAtStart()
-        {
-            return _currentPosition == 0;
-        }
-
-        public bool IsAtEnd()
-        {
-            return _currentPosition == _production.Words.Count();
-        }
-
     }
 }

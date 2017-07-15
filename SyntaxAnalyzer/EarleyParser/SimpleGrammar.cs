@@ -2,54 +2,84 @@
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
-   public class SimpleGrammar : Grammar
+   public  class SimpleGrammar : Grammar
     {
         public SimpleGrammar()
         {
-            ProductionInit();
+            initialize();
         }
 
-        private void ProductionInit()
+        private void initialize()
         {
-            var nonTerminal1 = "S";
-            var terminals1 = new[] {new Terminal("NP"),new Terminal("VP") };
-            ProductionAdd(nonTerminal1, terminals1);
-
-            var nonTerminal2 = "NP";
-            var terminals2 = new[] { new Terminal("NP"), new Terminal("PP"), new Terminal("Noun") };
-            ProductionAdd(nonTerminal2, terminals2);
-
-            var nonTerminal3 = "VP";
-            var terminals3 = new[] { new Terminal("Verb"), new Terminal("NP"), new Terminal("VP"), new Terminal("PP")};
-            ProductionAdd(nonTerminal3, terminals3);
-
-            var nonTerminal4 = "PP";
-            var terminals4 = new[] { new Terminal("Prep"), new Terminal("NP") };
-            ProductionAdd(nonTerminal4, terminals4);
-
-            var nounNonTerminal = "Noun";
-            var nounTerminals = new[] { new Terminal("John"), new Terminal("Mary"), new Terminal("Denver") };
-            ProductionAdd(nounNonTerminal, nounTerminals);
-
-            var verbNonTerminal = "Verb";
-            var verbTerminals = new[] { new Terminal("called") };
-            ProductionAdd(verbNonTerminal, verbTerminals);
-
-            var prepNonTerminal = "Prep";
-            var prepTerminals = new[] { new Terminal("from") };
-            ProductionAdd(prepNonTerminal, prepTerminals);
+            initRules();
+            initPOS();
         }
 
-        private void ProductionAdd(string nonTerminal, Terminal [] terminals)
+        private void initRules()
         {
-            Productions.Add(nonTerminal, terminals);
+
+            Production[] sRHS = { new Production(new string[] { "NP", "VP" })};
+            AddProduction(sRHS, "S");
+
+            Production[] npRHS = { new Production(new string[] { "Pronoun"}), new Production(new string[] { "Proper-Noun" }), new Production(new string[] { "DT", "Nominal" }), new Production(new string[] { "Nominal" }) };
+            AddProduction(npRHS, "NP");
+
+            Production[] vpRHS = { new Production(new string[] { "CV" }), new Production(new string[] { "CV", "PP" }), new Production(new string[] { "Verb" })};
+            AddProduction(vpRHS, "VP");
+
+            Production[] ppRHS = { new Production(new string[] { "Preposition", "NP" })};
+            AddProduction(ppRHS, "PP");
+
+            Production[] cnRHS = { new Production(new string[] { "Noun" }), new Production(new string[] { "Adjective", "Noun" }), new Production(new string[] { "Nominal", "Noun" }), new Production(new string[] { "Nominal", "PP" })};
+            AddProduction(cnRHS, "Nominal");
+
+            Production[] cvRHS = { new Production(new string[] { "Verb", "NP" })};
+            AddProduction(cvRHS, "CV");
+
+            //Production[] sRHS = { new Production(new string[] { "NP", "VP" }) };
+            //AddProduction(sRHS, "S");
+
+            //Production[] npRHS = { new Production(new string[] { "NP", "PP"  }), new Production(new string[] { "Noun" }) };
+            //AddProduction(npRHS, "NP");
+
+            //Production[] vpRHS = { new Production(new string[] { "VP", "NP" }), new Production(new string[] { "Verb", "PP" }), new Production(new string[] { "Verb", "Noun" }), new Production(new string[] { "Verb" }) };
+            //AddProduction(vpRHS, "VP");
+
+            //Production[] ppRHS = { new Production(new string[] { "Prep", "NP" }), new Production(new string[] { "Prep" }) };
+            //AddProduction(ppRHS, "PP");
+
+
+            Production[] nounRHS = { new Production(new string[] { "John" }), new Production(new string[] { "Mary" }), new Production(new string[] { "Denver" }), new Production(new string[] { "Moscow" }), };
+            AddProduction(nounRHS, "Noun");
+
+            Production[] verbRHS = { new Production(new string[] { "called" }) };
+            AddProduction(verbRHS, "Verb");
+
+            Production[] adjRHS = { new Production(new string[] { "annoying" }) };
+            AddProduction(adjRHS, "Adjective");
+
+            Production[] dtRHS = { new Production(new string[] { "an" }) };
+            AddProduction(dtRHS, "DT");
+
+            Production[] pronounRHS = { new Production(new string[] { "I" }) };
+            AddProduction(pronounRHS, "Pronoun");
+
+            Production[] properNounRHS = { new Production(new string[] { "Moscow" }) };
+            AddProduction(properNounRHS, "Proper-Noun");
+
+            Production[] prepRHS = { new Production(new string[] { "from"}), new Production(new string[] { "in" }) };
+            AddProduction(prepRHS, "Preposition");
         }
 
-        private void PartOfSpeechInit()
+        private void initPOS()
         {
-            PartOfSpeech.Add("Noun");
-            PartOfSpeech.Add("Verb");
-            PartOfSpeech.Add("Prep");
+            AddPartOfSpeech("Noun");
+            AddPartOfSpeech("Verb");
+            AddPartOfSpeech("DT");
+            AddPartOfSpeech("Adjective");
+            AddPartOfSpeech("Pronoun");
+            AddPartOfSpeech("Proper-Noun");
+            AddPartOfSpeech("Preposition");
         }
     }
 }

@@ -1,42 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
-    public abstract class Grammar
+   public abstract class Grammar
     {
-        public Dictionary<string, Terminal[]> Productions;
-        public List<string> PartOfSpeech;
+        private Dictionary<Production[], string> Productions;
+        private IList<string> PartOfSpeech;
 
-        protected Grammar()
+        public Grammar()
         {
-            Productions = new Dictionary<string, Terminal[]>();
+            Productions = new Dictionary<Production[], string>();
             PartOfSpeech = new List<string>();
         }
 
-        public Terminal[] GetTerminals(string lhs)
+        public virtual void AddProduction(Production[] production, string nonTerminal)
         {
-            Terminal[] rhs = null;
-            if (Productions.ContainsKey(lhs))
+            if (production == null) throw new ArgumentNullException("production");
+            if (string.IsNullOrEmpty(nonTerminal)) throw new NullReferenceException();
+
+            Productions.Add(production, nonTerminal);
+        }
+
+
+        public virtual Production GetStartProduction()
+        {
+            return new Production(new string[] { "@", "S" });
+        }
+
+        public virtual Production GetFinalProduction()
+        {
+            return new Production(new string[] { "S", "@" });
+        }
+
+        public virtual void AddPartOfSpeech(string partOfSpeech)
+        {
+            if (string.IsNullOrEmpty(partOfSpeech)) throw new NullReferenceException();
+
+            PartOfSpeech.Add(partOfSpeech);
+        }
+
+        public Production[] GetTerminals(string nonTerminal)
+        {
+            Production[] terminals = null;
+
+            if (Productions.ContainsValue(nonTerminal))
             {
-                foreach (KeyValuePair<string, Terminal[]> kvp in Productions)
+                foreach (var _keyValuePair in Productions)
                 {
-                    if (kvp.Key == lhs)
+                    if (_keyValuePair.Value == nonTerminal)
                     {
-                        rhs = kvp.Value;
+                        terminals = _keyValuePair.Key;
                         break;
                     }
                 }
             }
-            return rhs;
+
+            return terminals;
         }
 
-        public bool IsPartOfSpeech(string key)
+        public bool IsPartOfSpeech(string word)
         {
-            return PartOfSpeech.Contains(key);
+            return PartOfSpeech.Contains(word);
         }
     }
 }

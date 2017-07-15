@@ -40,18 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EarleyParser\EarleyParser.cs" />
+    <Compile Include="EarleyParser\StateSet.cs" />
+    <Compile Include="EarleyParser\Recognizer.cs" />
     <Compile Include="EarleyParser\Grammar.cs" />
-    <Compile Include="EarleyParser\Item.cs" />
-    <Compile Include="EarleyParser\NonTerminal.cs" />
-    <Compile Include="EarleyParser\Pointer.cs" />
     <Compile Include="EarleyParser\Production.cs" />
     <Compile Include="EarleyParser\SimpleGrammar.cs" />
-    <Compile Include="EarleyParser\StateSet.cs" />
-    <Compile Include="EarleyParser\Terminal.cs" />
-    <Compile Include="EarleyParser\Word.cs" />
+    <Compile Include="EarleyParser\Item.cs" />
     <Compile Include="Helpers\Extensions.cs" />
-    <Compile Include="ITextWriter.cs" />
+    <Compile Include="IO\ITextWriter.cs" />
     <Compile Include="IO\ConsoleTextWriter.cs" />
     <Compile Include="Normalization\INormalization.cs" />
     <Compile Include="SentenceDetector\ISentence.cs" />
