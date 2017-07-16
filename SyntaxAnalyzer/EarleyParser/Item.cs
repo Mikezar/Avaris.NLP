@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
@@ -25,9 +25,10 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         public Production Terminal => _terminal;
 
-        public string NextItem => _terminal.GetTerminalAfterDot();
+        public Word NextItem => _terminal.GetTerminalAfterDot();
 
-        public string PreviousItem => _terminal.GetTerminalBeforeDot();
+        public Word PreviousItem => _terminal.GetTerminalBeforeDot();
+
 
         public bool IsAtEnd => _terminal.IsAtEnd();
 

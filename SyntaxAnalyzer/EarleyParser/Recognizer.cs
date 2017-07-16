@@ -18,6 +18,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             _grammar = grammar;
         }
 
+        public string[] Sentence => _sentence;
         public StateSet[] Charts => _charts;
 
         private void Init(string[] sentence)
@@ -28,9 +29,10 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
             for (int i = 0; i < _charts.Length; i++)
                 _charts[i] = new StateSet();
+
         }
 
-        public bool ParseSentence(string[] sentence)
+        public bool RecognizeSentence(string[] sentence)
         {
             Init(sentence);
 
@@ -43,19 +45,22 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
                 for (int j = 0; j < _charts[i].Count; j++)
                 {
                     Item item = _charts[i].GetItem(j);
-                    string nextTerminal = item.NextItem;
+                    var nextTerminal = item.NextItem;
 
-                    if (item.IsAtEnd)
+                    if(!item.IsAtEnd)
                     {
-                        Completer(item);
-                    }
-                    else if (_grammar.IsPartOfSpeech(nextTerminal))
-                    {
-                        Scanner(item);
+                        if (_grammar.IsPartOfSpeech(nextTerminal.Value))
+                        {
+                            Scanner(item);
+                        }
+                        else
+                        {
+                            Predictor(item);
+                        }
                     }
                     else
                     {
-                        Predictor(item);
+                        Completer(item);
                     }
                 }
             }
@@ -75,12 +80,12 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         private void Predictor(Item item)
         {
-            string nonTerminal = item.NextItem;
-            Production[] productions = _grammar.GetTerminals(nonTerminal);
+            var nonTerminal = item.NextItem;
+            Production[] productions = _grammar.GetTerminals(nonTerminal.Value);
 
             for (int i = 0; i < productions.Length; i++)
             {
-                Item newItem = new Item(nonTerminal, productions[i].AddDot(), item.Index, item.Index);
+                Item newItem = new Item(nonTerminal.Value, productions[i].AddDot(), item.Index, item.Index);
 
                 _charts[item.Index].AddItem(newItem);
             }
@@ -88,13 +93,13 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         private void Scanner(Item item)
         {
-            string nonTerminal = item.NextItem;
-            Production[] productions = _grammar.GetTerminals(nonTerminal);
+            var nonTerminal = item.NextItem;
+            Production[] productions = _grammar.GetTerminals(nonTerminal.Value);
 
             for (int a = 0; a < productions.Length; a++)
             {
                 int count = -1;
-                string[] terms = productions[a].Terminals;
+                var terms = productions[a].Terminals;
 
                 count = terms.Length;
 
@@ -102,12 +107,12 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
                 {
                     for (int k = 0; k < count; k++)
                     {
-                        string term = terms[k].ToLower();
+                        var term = terms[k];
                         string sent = _sentence[item.Index].ToLower();
 
-                        if (term.CompareTo(sent) == 0)
+                        if (term.Value.ToLower().CompareTo(sent) == 0)
                         {
-                            Item newItem = new Item(nonTerminal, productions[a].AddDotAtEnd(), item.Index, item.Index + 1);
+                            Item newItem = new Item(nonTerminal.Value, productions[a].AddDotAtEnd(), item.Index, item.Index + 1);
 
                             _charts[item.Index + 1].AddItem(newItem);
                         }
@@ -123,9 +128,12 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             for (int a = 0; a < _charts[item.CurrentPosition].Count; a++)
             {
                 Item it = _charts[item.CurrentPosition].GetItem(a);
-                string nextTerminal = it.NextItem;
+                var nextTerminal = it.NextItem;
 
-                if (nextTerminal != string.Empty && nonTerminal.CompareTo(nextTerminal) == 0)
+                if (nextTerminal == null)
+                    continue;
+
+                if (nextTerminal.Value != string.Empty && nonTerminal.CompareTo(nextTerminal.Value) == 0)
                 {
                     Item newTerm = new Item(it.NonTerminal, it.Terminal.MoveDot(), it.CurrentPosition, item.Index);
 

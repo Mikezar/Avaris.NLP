@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Avaris.NLP.SyntaxAnalyzer.EarleyParser;
 using System.Threading.Tasks;
 
 namespace Avaris.NLP.SyntaxAnalyzer.IO
@@ -51,6 +52,30 @@ namespace Avaris.NLP.SyntaxAnalyzer.IO
             }
 
             FileWriterAsync(builder.ToString());
+        }
+
+        public void ChartWriter(Recognizer recognizer, bool status)
+        {
+            var charts = recognizer.Charts;
+            var sentence = recognizer.Sentence;
+            var builder = new StringBuilder();
+
+            for (int i = 0; i < sentence.Length - 1; i++)
+                builder.Append(sentence[i].ToString() + " ");
+
+            builder.Append(sentence[sentence.Length - 1] + ".");
+
+            string outputSentence = builder.ToString();
+
+            Console.WriteLine($"\nSentence: \"{outputSentence}\"");
+            Console.WriteLine($"Successfully recognized: {status}");
+            Console.WriteLine("\r\n");
+            Console.WriteLine($"Charts produced by the sentence: \"{outputSentence}\"");
+            for (int i = 0; i < charts.Length; i++)
+            {
+                Console.WriteLine($"Chart {i}:");
+                Console.WriteLine(charts[i]);
+            }
         }
     }
 }

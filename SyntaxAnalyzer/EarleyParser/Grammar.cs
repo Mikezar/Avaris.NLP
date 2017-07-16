@@ -25,12 +25,12 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         public virtual Production GetStartProduction()
         {
-            return new Production(new string[] { "@", "S" });
+            return new Production(new Word[] { new NonTerminal("@"),new NonTerminal("S") });
         }
 
         public virtual Production GetFinalProduction()
         {
-            return new Production(new string[] { "S", "@" });
+            return new Production(new Word[] { new NonTerminal("S"), new NonTerminal("@") });
         }
 
         public virtual void AddPartOfSpeech(string partOfSpeech)
