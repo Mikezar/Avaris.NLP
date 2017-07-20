@@ -4,7 +4,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
     public class Production
     {
-        private readonly bool _hasDot = false;
+        private readonly bool _hasDot;
         private readonly int _dot = -1;
         private const string DOT = "@";
         private readonly Word[] _terminals;

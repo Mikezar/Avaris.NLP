@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
+using Avaris.NLP.MorfologyLibrary.Tokenization;
 using Avaris.NLP.SyntaxAnalyzer;
 using Avaris.NLP.SyntaxAnalyzer.EarleyParser;
 using Avaris.NLP.SyntaxAnalyzer.SentenceDetector;
@@ -15,30 +18,46 @@ namespace Avaris.NLP.Console
     {
         static void Main(string[] args)
         {
-            string text = "At Microsoft, basic and applied research plays a vital role in breakthrough technological innovations that empower people to achieve more. The research tradition at Microsoft was formalized in 1991 with the founding of the Microsoft Research Redmond lab. Today, the Redmond lab is at the hub of Microsoft Research’s globe-spanning organization that fosters open collaborations with partners throughout industry and academic institutions as well as Microsoft product teams. Research in the Redmond lab ranges from thought leadership in security, privacy and cryptography to foundational work in areas such as systems and networking, programming languages, human - computer interaction, human language technologies, AI and computer vision. Microsoft Research Redmond is the company’s largest research lab and each year hosts several hundred research interns and visitors from distinguished undergraduate and graduate programs around the world. People come to the Microsoft Research Redmond lab for the opportunity to work on profound computer science challenges at a scale that achieves global impact.";
+            string text = "Separately, profits at rival Bank of America were boosted by tighter US interest rate policy.Goldman posted profits of $1.83bn for the quarter, down from the $2.2bn reported in the first three months of 2017 and only slightly higher than the $1.82bn it reported for the same quarter last year.We didn't navigate the market as well as we aspire to or as well as we have in the past he said. Active management firms are also under pressure as investors switch funds away from expensive stock-pickers to passive funds that track indexes such as the S&P 500. Mr Chavez also said Goldman's own performance in commodities - a business many of its rivals have shifted away from in recent years - has been weak.";
 
-            ConsoleTextReader reader = new ConsoleTextReader();
-            //var output = reader.TextReader(text);
-            Task<string> output = reader.TextReaderFromFileAsync(@"C:\Users\Mike\Desktop\TestWord.txt");
-            // ISentenceDetector detector = new SentenceDetector(new TextContext(output.Result + "  "), new Sentence(), new Normalization());
+            ITextReader reader = new ConsoleTextReader();
+            var output = reader.TextReader(text);
+            //Task<string> output = reader.TextReaderFromFileAsync(@"C:\Users\Mike\Desktop\TestWord.txt");
+           //  ISentenceDetector detector = new SentenceDetector(new TextContext(output + "  "), new Sentence(), new Normalization());
 
-            string s1 = "John called an annoying Mary";
-            string s2 = "John called Mary in Moscow";
+            //string s1 = "John called Fin";
+            //string s2 = "John called Mary in Moscow";
 
-            var sentence1 = WordHelper.SplitToWords(s1);
-            var sentence2 = WordHelper.SplitToWords(s2);
-
-            Grammar grammar = new SimpleGrammar();
-            Recognizer parser = new Recognizer(grammar);
-
-            bool status = parser.RecognizeSentence(sentence1);
-
+            //var sentence1 = WordHelper.SplitToWords(s1);
+            //var sentence2 = WordHelper.SplitToWords(s2);
             ITextWriter write = new ConsoleTextWriter();
-            write.ChartWriter(parser, status);
+
+            //Grammar grammar = new CFGrammar(@"C:\Users\m.serduyk\Desktop\SourceGrammar.txt", reader);
+            //Recognizer parser = new Recognizer(grammar);
+
+            //bool status = parser.RecognizeSentence(sentence1);
+            //write.ChartWriter(parser, status);
+            //bool status2 = parser.RecognizeSentence(sentence2);
+            //write.ChartWriter(parser, status2);
+
 
             //var sentences = detector.EOSDetector();
 
-     
+            //write.Writer(sentences);
+
+
+
+            ILexer lexer = new Lexer(text);
+            var tokens = lexer.Scanner();
+            lexer.Evaluator(tokens);
+            System.Console.WriteLine(lexer.STreeBuilder(tokens));
+
+
+            //foreach (var token in tokens)
+            //{
+            //    System.Console.WriteLine($"{token.Value} ");
+            //}
+
             //write.FileWriter(sentences);
             System.Console.ReadLine();
         }

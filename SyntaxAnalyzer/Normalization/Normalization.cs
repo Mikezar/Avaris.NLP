@@ -11,6 +11,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.Normalization
         private const string PunctuationSymbols = "[«»‹›:;‘\"’“”‚„¿¡§¶•—–]";
         private const string EmailPattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
         private const string URLPattern = @"(www|ftp|http)[^\s]+";
+        //Regex regex = new Regex("[.«»‹›:;‘\"’“”,„¿!&?¡§¶•—^#*@\\`\\(\\)\\[\\]\\(\\)\\{\\}=]");
 
         private Dictionary<char, char> DiacriticSymbols = new Dictionary<char, char>()
         {

@@ -47,15 +47,15 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
                     Item item = _charts[i].GetItem(j);
                     var nextTerminal = item.NextItem;
 
-                    if(!item.IsAtEnd)
+                    if (!item.IsAtEnd)
                     {
-                        if (_grammar.IsPartOfSpeech(nextTerminal.Value))
+                        if (!nextTerminal.IsTerminal)
                         {
-                            Scanner(item);
+                            Predictor(item); 
                         }
                         else
                         {
-                            Predictor(item);
+                            Scanner(item);
                         }
                     }
                     else
@@ -113,12 +113,22 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
                         if (term.Value.ToLower().CompareTo(sent) == 0)
                         {
                             Item newItem = new Item(nonTerminal.Value, productions[a].AddDotAtEnd(), item.Index, item.Index + 1);
-
                             _charts[item.Index + 1].AddItem(newItem);
                         }
                     }
                 }
+
             }
+            //if (newItem != null)
+            //{
+            //    _charts[item.Index + 1].AddItem(newItem);
+            //}
+            //else
+            //{
+            //    var production = new Production(new Word[] {new Terminal(_sentence[item.Index].ToLower())});
+            //    newItem = new Item(nonTerminal.Value, production.AddDotAtEnd(), item.Index, item.Index + 1);
+            //    _charts[item.Index + 1].AddItem(newItem);
+            //}
         }
 
         private void Completer(Item item)

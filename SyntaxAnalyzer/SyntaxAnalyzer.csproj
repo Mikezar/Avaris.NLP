@@ -45,12 +45,11 @@
     <Compile Include="EarleyParser\Recognizer.cs" />
     <Compile Include="EarleyParser\Grammar.cs" />
     <Compile Include="EarleyParser\Production.cs" />
-    <Compile Include="EarleyParser\SimpleGrammar.cs" />
+    <Compile Include="EarleyParser\CFGrammar.cs" />
     <Compile Include="EarleyParser\Item.cs" />
     <Compile Include="EarleyParser\Terminal.cs" />
     <Compile Include="EarleyParser\Word.cs" />
     <Compile Include="Helpers\Extensions.cs" />
-    <Compile Include="Helpers\WordHelper.cs" />
     <Compile Include="IO\ITextWriter.cs" />
     <Compile Include="IO\ConsoleTextWriter.cs" />
     <Compile Include="Normalization\INormalization.cs" />

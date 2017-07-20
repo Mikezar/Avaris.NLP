@@ -4,7 +4,7 @@ namespace Avaris.NLP.Dictionary
 {
     public sealed class Prepositions
     {
-        public List<string> SingleWord = new List<string>()
+        public static string[] SingleWord =
         {
             "aboard",
             "about",
@@ -95,7 +95,7 @@ namespace Avaris.NLP.Dictionary
             "worth",
         };
 
-        public List<string> TwoWords = new List<string>()
+        public static string[] TwoWords = 
         {
             "according to",
             "adjacent to",
@@ -134,7 +134,7 @@ namespace Avaris.NLP.Dictionary
             "up to"
         };
 
-        public List<string> ThreeWords = new List<string>()
+        public static string[] ThreeWords =
         {
             "as far as",
             "as opposed to",
@@ -142,7 +142,7 @@ namespace Avaris.NLP.Dictionary
             "as well as",
         };
 
-        public List<string> CommonIdiomaticExpressions = new List<string>()
+        public static  string[] CommonIdiomaticExpressions =
         {
             "at the behest of",
             "by means of",

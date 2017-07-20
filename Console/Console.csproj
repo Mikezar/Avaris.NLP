@@ -49,6 +49,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MorfologyLibrary\MorfologyLibrary.csproj">
+      <Project>{fa469479-2aea-42fd-b55b-f7f4f3d6b931}</Project>
+      <Name>MorfologyLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SyntaxAnalyzer\SyntaxAnalyzer.csproj">
       <Project>{6099d611-5a32-45ce-84b0-3bae2f412825}</Project>
       <Name>SyntaxAnalyzer</Name>

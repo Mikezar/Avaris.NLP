@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Avaris.NLP.MorfologyLibrary.Rules;
 using Avaris.NLP.SyntaxAnalyzer.Normalization;
 
 namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
@@ -9,6 +11,8 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
         private readonly IText _text;
         private readonly ISentence _sentence;
         private readonly INormalization _normalization;
+
+        private readonly Regex _rule = new Regex(LexicalRule.RedundantPunctuation);
 
         public int CurrentPosition { get; set; }
         public int PreviousPosition { get; set; }
@@ -68,7 +72,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
                     }
                     else
                     {
-                        if (ReservedPosition != null)
+                        if (ReservedPosition != null && ReservedPosition == 0)
                         {
                             ReservedPosition = initialPosition;
                         }
@@ -81,13 +85,19 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 
         public bool RuleObserver(int index)
         {
-            if (char.IsWhiteSpace(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1]))
-            {
-                if (char.IsLower(_text.OriginalText[index - 2]) && !(char.IsDigit(_text.OriginalText[index + 1]) || char.IsDigit(_text.OriginalText[index + 2])))  return true;
+            var match = _rule.Match(_text.OriginalText, index);
 
-                return false;
+            if (match.Index == index)
+            {
+                return true;
             }
-            else if (char.IsUpper(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1])) return true;
+            //if (char.IsWhiteSpace(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1]))
+            //{
+            //    if (char.IsLower(_text.OriginalText[index - 2]) && !(char.IsDigit(_text.OriginalText[index + 1]) || char.IsDigit(_text.OriginalText[index + 2])))  return true;
+
+            //    return false;
+            //}
+            //else if (char.IsUpper(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1])) return true;
 
             return false;
         }

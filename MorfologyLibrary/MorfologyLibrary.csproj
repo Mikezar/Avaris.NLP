@@ -44,7 +44,12 @@
     <Compile Include="MorfologyModel.cs" />
     <Compile Include="Morpheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\SentenceRule.cs" />
+    <Compile Include="Rules\LexicalRule.cs" />
+    <Compile Include="Tokenization\ILexer.cs" />
+    <Compile Include="Tokenization\Lexer.cs" />
+    <Compile Include="Tokenization\Token.cs" />
+    <Compile Include="Tokenization\TokenRule.cs" />
+    <Compile Include="Tokenization\TokenType.cs" />
     <Compile Include="Word.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

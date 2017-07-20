@@ -45,6 +45,7 @@
     <Compile Include="Conjunctions.cs" />
     <Compile Include="Postpositions.cs" />
     <Compile Include="Prepositions.cs" />
+    <Compile Include="Pronoun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

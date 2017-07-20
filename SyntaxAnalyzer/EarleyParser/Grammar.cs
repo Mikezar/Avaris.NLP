@@ -22,7 +22,6 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             Productions.Add(production, nonTerminal);
         }
 
-
         public virtual Production GetStartProduction()
         {
             return new Production(new Word[] { new NonTerminal("@"),new NonTerminal("S") });
@@ -38,6 +37,33 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
             if (string.IsNullOrEmpty(partOfSpeech)) throw new NullReferenceException();
 
             PartOfSpeech.Add(partOfSpeech);
+        }
+
+        public virtual void DictionaryBuilder(string [] words, string partOfSpeech)
+        {
+            if(words.Length == 0) throw new ArgumentException("words");
+            if(string.IsNullOrEmpty(partOfSpeech)) throw new ArgumentNullException("partOfSpeech");
+
+            if(!PartOfSpeech.Contains(partOfSpeech)) throw new Exception($"You can't initialize dictionary with {partOfSpeech} as part of speech.");
+               
+            Production[] productionWords = new Production[words.Length];
+            for (int i = 0; i < words.Length; i++)
+            {
+                productionWords[i] = new Production(new Word[] {new Terminal(words[i]) });
+            }
+
+            Productions.Add(productionWords, partOfSpeech);
+        }
+
+        public virtual void RegisterPartOfSpeech()
+        {
+                AddPartOfSpeech("Noun");
+                AddPartOfSpeech("Verb");
+                AddPartOfSpeech("DT");
+                AddPartOfSpeech("Adjective");
+                AddPartOfSpeech("Pronoun");
+                AddPartOfSpeech("Proper-Noun");
+                AddPartOfSpeech("Preposition");
         }
 
         public Production[] GetTerminals(string nonTerminal)
