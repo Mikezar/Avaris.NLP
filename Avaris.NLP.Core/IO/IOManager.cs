@@ -12,7 +12,7 @@ namespace Avaris.NLP.Core.IO
     {
         private readonly ILogger _logger;
 
-        private static readonly IList<string> _extensions = new List<string>() {".txt", ".doc"};
+        private static readonly IEnumerable<string> _extensions = new List<string>() {".txt", ".doc"};
 
         public readonly IFileWriter FileWriter;
         public readonly IFileReader FileReader;

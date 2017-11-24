@@ -8,9 +8,9 @@ namespace Avaris.NLP.Core.Units
 {
     public interface IUnit<T>
     {
-        string Source { get; }
-        string Normalized { get; }
-        IEnumerable<T> Components { get; }
+        string Source { get;}
+        string Normalized { get; set; }
+        IEnumerable<T> Components { get; set; }
         int Count { get; }
     }
 }
