@@ -8,6 +8,7 @@ namespace Avaris.NLP.Core.Units
 {
     public interface ISentence : IUnit<IWord>
     {
-        IEnumerable<char> Separators { get; }
+        int InitialPosition { get; }
+        int FinalPosition { get; }
     }
 }

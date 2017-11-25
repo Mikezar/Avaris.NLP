@@ -49,6 +49,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Avaris.NLP.Core\Avaris.NLP.Core.csproj">
+      <Project>{6b385c38-1ddd-4a29-8b94-0b05d979b59c}</Project>
+      <Name>Avaris.NLP.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MorfologyLibrary\MorfologyLibrary.csproj">
       <Project>{fa469479-2aea-42fd-b55b-f7f4f3d6b931}</Project>
       <Name>MorfologyLibrary</Name>

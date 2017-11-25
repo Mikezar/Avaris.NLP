@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NLog;
+using System.Text;
 
 namespace Avaris.NLP.Core.IO
 {
@@ -12,23 +8,27 @@ namespace Avaris.NLP.Core.IO
     {
         private readonly ILogger _logger;
 
-        private static readonly IEnumerable<string> _extensions = new List<string>() {".txt", ".doc"};
+        private readonly IEnumerable<string> _extensions;
 
         public readonly IFileWriter FileWriter;
         public readonly IFileReader FileReader;
 
-        public IOManager()
+        public IOManager(IEnumerable<string> extensions = null)
         {
-            _logger = LogManager.GetLogger("IO"); 
+            _logger = LogManager.GetLogger("IO");
+            _extensions = extensions ?? new List<string>() { ".txt", ".doc" };
             FileWriter = new FileWriter(_logger);
-            FileReader = new FileReader(_logger);
+            FileReader = new FileReader(_logger, _extensions);
         }
+
+        public abstract string Read(string text);
 
         public abstract void Write(string text);
 
-        public static bool CheckExtension(string path)
+
+        public string EncodeToUTF7(string input)
         {
-            return _extensions.Contains(Path.GetExtension(path));
+            return Encoding.UTF7.GetString(Encoding.UTF7.GetBytes(input));
         }
     }
 }

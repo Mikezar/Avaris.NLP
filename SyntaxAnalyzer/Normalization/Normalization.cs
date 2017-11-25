@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Text;
 using System.Linq;
 
 namespace Avaris.NLP.SyntaxAnalyzer.Normalization
@@ -13,7 +12,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.Normalization
         private const string URLPattern = @"(www|ftp|http)[^\s]+";
         //Regex regex = new Regex("[.«»‹›:;‘\"’“”,„¿!&?¡§¶•—^#*@\\`\\(\\)\\[\\]\\(\\)\\{\\}=]");
 
-        private Dictionary<char, char> DiacriticSymbols = new Dictionary<char, char>()
+        private IDictionary<char, char> DiacriticSymbols = new Dictionary<char, char>()
         {
             {'À', 'A'},
             {'Á', 'A'},
@@ -92,6 +91,12 @@ namespace Avaris.NLP.SyntaxAnalyzer.Normalization
             {'ý', 'y'},
             {'ÿ', 'y'},
         };
+
+        public Normalization()
+        {
+
+        }
+
 
         public string PreNormalizationToEOSDetection(string input, bool removePunctuationSymbols, bool substituteDiacritic, bool removeURLs, bool removeEmails)
         {

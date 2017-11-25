@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Avaris.NLP.Core.Units
 {
     public interface IUnit<T>
     {
-        string Source { get;}
+        string Source { get; set; }
         string Normalized { get; set; }
-        IEnumerable<T> Components { get; set; }
+        ICollection<T> Components { get; set; }
         int Count { get; }
     }
 }

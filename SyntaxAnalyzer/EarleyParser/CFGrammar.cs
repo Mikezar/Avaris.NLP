@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
 using Avaris.NLP.Dictionary;
-using Avaris.NLP.SyntaxAnalyzer.IO;
+using Avaris.NLP.Core.IO;
 
 namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 {
     public class CFGrammar : Grammar
     {
         private readonly string _sourceString;
-        private readonly ITextReader _textReader;
+        private readonly IFileReader _textReader;
 
-        public CFGrammar(string sourceString, ITextReader reader)
+        public CFGrammar(string sourceString, IFileReader reader)
         {
             if (string.IsNullOrEmpty(sourceString)) throw new NullReferenceException(sourceString);
             _sourceString = sourceString;
@@ -46,7 +46,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.EarleyParser
 
         public void CustomGrammarForm()
         {
-            var output =  _textReader.TextReaderFromFileAsync(_sourceString).Result.Replace("\r\n", "");
+            var output =  _textReader.TextReadFromFileAsync(_sourceString).Result.Replace("\r\n", "");
 
             string[] lines = output.Split(';');
 

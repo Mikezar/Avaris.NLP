@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Avaris.NLP.MorfologyLibrary.Rules;
+using Avaris.NLP.Core.Rules;
 using Avaris.NLP.SyntaxAnalyzer.Normalization;
+using Avaris.NLP.Core.Units;
+using Avaris.NLP.Core.Units.Concrete;
 
 namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 {
     public class SentenceDetector : ISentenceDetector
     {
         private readonly IText _text;
-        private readonly ISentence _sentence;
         private readonly INormalization _normalization;
-
-        private readonly Regex _rule = new Regex(LexicalRule.RedundantPunctuation);
+        private readonly IRuleConvention _rule;
+        private ICollection<int> _positions;
 
         public int CurrentPosition { get; set; }
         public int PreviousPosition { get; set; }
@@ -20,62 +20,73 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 
         public int SpanLength => CurrentPosition - PreviousPosition;
 
-        public SentenceDetector(IText text, ISentence sentence, INormalization normalization)
+        public SentenceDetector(IText text, INormalization normalization, IRuleConvention rule)
         {
             _text = text;
-            _sentence = sentence;
             _normalization = normalization;
+            _rule = rule;
         }
 
-        public IEnumerable<string> EOSDetector(bool preNormalizing)
+        public IEnumerable<ISentence> DetectEnd()
         {
-            if (preNormalizing)
+            var positions = DetectPositions().ToArray();
+
+
+            for (int i = 0; i < positions.Count(); i++)
             {
-               _text.OriginalText = _normalization.PreNormalizationToEOSDetection(_text.OriginalText);
-            }
-
-                var symbolCount = _text.OriginalText.Count(x => _sentence.GetSeparators().Contains(x));
-
-                for (int i = 0; i < symbolCount; i++)
+                if (i == positions.Count() - 1)
                 {
-                    CurrentPosition = GetCurrentPosition(CurrentPosition);
-
-                    if (CurrentPosition == -1) break;
-                    
-                    SymbolAnalyzer(PreviousPosition, CurrentPosition, SpanLength);
+                    GenerateSentence(positions[i], CurrentPosition - positions[i] + 1);
+                    continue;
                 }
 
-            _text.Sentence = _sentence;
-            return _sentence.GetSentences();
+                GenerateSentence(positions[i], positions[i + 1] - positions[i]);
+            }
+
+            return _text.Components;
         }
 
-        public void SymbolAnalyzer(int initialPosition, int finalPosition, int spanLength)
+        public IEnumerable<int> DetectPositions()
         {
-            switch (_text.OriginalText[finalPosition])
+            _positions = new List<int>();
+
+            var symbolCount = _text.Source.Count(x => _text.Separators.Contains(x));
+
+            for (int i = 0; i < symbolCount; i++)
+            {
+                CurrentPosition = GetCurrentPosition(CurrentPosition);
+
+                if (CurrentPosition == -1) break;
+
+                SymbolAnalyzer(PreviousPosition, CurrentPosition, SpanLength);
+            }
+
+            return _positions;
+        }
+
+        private void SymbolAnalyzer(int initialPosition, int finalPosition, int spanLength)
+        {
+            switch (_text.Source[finalPosition])
             {
                 case '!':
                 case '?':
-                    _sentence.AddSubstring(_text.OriginalText.Substring(initialPosition, spanLength + 1));
+                    _positions.Add(initialPosition);
                     break;
                 case '.':
                     if (RuleObserver(finalPosition))
                     {
                         if (ReservedPosition == 0)
-                        {
-                            _sentence.AddSubstring(_text.OriginalText.Substring(initialPosition, spanLength + 1).Trim());
-                        }
+                            _positions.Add(initialPosition);
                         else
                         {
-                            _sentence.AddSubstring(_text.OriginalText.Substring(ReservedPosition.GetValueOrDefault(), CurrentPosition - ReservedPosition.GetValueOrDefault() + 1).Trim());
+                            _positions.Add(ReservedPosition.GetValueOrDefault());
                             ResetReservedPosition();
                         }
                     }
                     else
                     {
                         if (ReservedPosition != null && ReservedPosition == 0)
-                        {
                             ReservedPosition = initialPosition;
-                        }
                     }
                     break;
                 default:
@@ -83,34 +94,30 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
             }
         }
 
-        public bool RuleObserver(int index)
+        private void GenerateSentence(int initialPosition, int length)
         {
-            var match = _rule.Match(_text.OriginalText, index);
+            _text.Components.Add(new Sentence(
+                _text.Source.Substring(initialPosition, length).Trim(), initialPosition, length));
+        }
 
-            if (match.Index == index)
-            {
-                return true;
-            }
-            //if (char.IsWhiteSpace(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1]))
-            //{
-            //    if (char.IsLower(_text.OriginalText[index - 2]) && !(char.IsDigit(_text.OriginalText[index + 1]) || char.IsDigit(_text.OriginalText[index + 2])))  return true;
+        private bool RuleObserver(int index)
+        {
+            var match = _rule.MatchRedundantPunctuation(_text.Source, index);
 
-            //    return false;
-            //}
-            //else if (char.IsUpper(_text.OriginalText[index + 1]) && char.IsLower(_text.OriginalText[index - 1])) return true;
-
+            if (match.Index == index) return true;
+          
             return false;
         }
 
-        public int GetCurrentPosition(int index)
+        private int GetCurrentPosition(int index)
         {
-            int offset = _text.OriginalText.IndexOfAny(_sentence.GetSeparators(), index);
+            int offset = _text.Source.IndexOfAny(_text.Separators.ToArray(), index);
             if (index == 0) return offset;
 
             PreviousPosition = offset + 1;
             if (offset == -1) return -1;
 
-            return _text.OriginalText.IndexOfAny(_sentence.GetSeparators(), offset + 1);
+            return _text.Source.IndexOfAny(_text.Separators.ToArray(), offset + 1);
         }
 
         private void ResetReservedPosition()

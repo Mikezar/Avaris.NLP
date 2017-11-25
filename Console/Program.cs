@@ -9,8 +9,10 @@ using Avaris.NLP.SyntaxAnalyzer;
 using Avaris.NLP.SyntaxAnalyzer.EarleyParser;
 using Avaris.NLP.SyntaxAnalyzer.SentenceDetector;
 using Avaris.NLP.SyntaxAnalyzer.Normalization;
-using Avaris.NLP.SyntaxAnalyzer.Helpers;
-using Avaris.NLP.SyntaxAnalyzer.IO;
+using Avaris.NLP.Core.IO;
+using Avaris.NLP.Core.Units;
+using Avaris.NLP.Core.Units.Concrete;
+using Avaris.NLP.Core.Rules;
 
 namespace Avaris.NLP.Console
 {
@@ -18,19 +20,36 @@ namespace Avaris.NLP.Console
     {
         static void Main(string[] args)
         {
-            string text = "Separately, profits at rival Bank of America were boosted by tighter US interest rate policy.Goldman posted profits of $1.83bn for the quarter, down from the $2.2bn reported in the first three months of 2017 and only slightly higher than the $1.82bn it reported for the same quarter last year.We didn't navigate the market as well as we aspire to or as well as we have in the past he said. Active management firms are also under pressure as investors switch funds away from expensive stock-pickers to passive funds that track indexes such as the S&P 500. Mr Chavez also said Goldman's own performance in commodities - a business many of its rivals have shifted away from in recent years - has been weak.";
+            //if (preNormalizing)
+            //{
+            //   _text.Source = _normalization.PreNormalizationToEOSDetection(_text.Source);
+            //}
 
-            ITextReader reader = new ConsoleTextReader();
-            var output = reader.TextReader(text);
+
+            string text = "  Connecticut  --  $  100  million  of  general obligation capital  appreciation bonds, College  Savings Plan,  1989  Series B, via  a Prudential-Bache  Capital Funding group.";
+       
+            IOManager manager = new ConsoleManager();
+
+            IText context = new Text(manager.Read(text));
+
+            ISentenceDetector detector = new SentenceDetector(context, new Normalization(), new BaseRuleConvention());
+            var sentences = detector.DetectEnd();
+
+            foreach (var sentence in sentences)
+            {
+                manager.Write(sentence.Source);
+            }
+
+
             //Task<string> output = reader.TextReaderFromFileAsync(@"C:\Users\Mike\Desktop\TestWord.txt");
-           //  ISentenceDetector detector = new SentenceDetector(new TextContext(output + "  "), new Sentence(), new Normalization());
+            //  ISentenceDetector detector = new SentenceDetector(new TextContext(output + "  "), new Sentence(), new Normalization());
 
             //string s1 = "John called Fin";
             //string s2 = "John called Mary in Moscow";
 
             //var sentence1 = WordHelper.SplitToWords(s1);
             //var sentence2 = WordHelper.SplitToWords(s2);
-            ITextWriter write = new ConsoleTextWriter();
+            //  ITextWriter write = new ConsoleTextWriter();
 
             //Grammar grammar = new CFGrammar(@"C:\Users\m.serduyk\Desktop\SourceGrammar.txt", reader);
             //Recognizer parser = new Recognizer(grammar);
@@ -47,10 +66,10 @@ namespace Avaris.NLP.Console
 
 
 
-            ILexer lexer = new Lexer(text);
-            var tokens = lexer.Scanner();
-            lexer.Evaluator(tokens);
-            System.Console.WriteLine(lexer.STreeBuilder(tokens));
+            //ILexer lexer = new Lexer(text);
+            //var tokens = lexer.Scanner();
+            //lexer.Evaluator(tokens);
+            //System.Console.WriteLine(lexer.STreeBuilder(tokens));
 
 
             //foreach (var token in tokens)

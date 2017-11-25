@@ -1,26 +1,30 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using NLog;
 
 namespace Avaris.NLP.Core.IO
 {
     public class FileReader : IFileReader
     {
+        private readonly IEnumerable<string> _extensions;
 
         private readonly ILogger _logger;
 
-        public FileReader(ILogger logger)
+        public FileReader(ILogger logger, IEnumerable<string> extensions)
         {
             _logger = logger;
+            _extensions = extensions;
         }
 
         private void Validate(string path)
         {
             if (string.IsNullOrEmpty(path)) throw new NullReferenceException($"The string {path} was null or empty");
             if (!File.Exists(path)) throw new Exception("The file doesn't exist");
-            if (!IOManager.CheckExtension(path)) throw new ArgumentException("path");
+            if (!CheckExtension(path)) throw new ArgumentException("path");
         }
 
 
@@ -53,9 +57,9 @@ namespace Avaris.NLP.Core.IO
             return new string(buffer);
         }
 
-        public string EncodeToUTF7(string input)
+        public bool CheckExtension(string path)
         {
-            return Encoding.UTF7.GetString(Encoding.UTF7.GetBytes(input));
+            return _extensions.Contains(Path.GetExtension(path));
         }
     }
 }
