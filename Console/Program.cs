@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -25,14 +26,41 @@ namespace Avaris.NLP.Console
             //   _text.Source = _normalization.PreNormalizationToEOSDetection(_text.Source);
             //}
 
+            var list = new List<PointFeature>()
+            {
+                new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Symbols, false),
+                new PointFeature(RegisterGroup.Digit, RegisterGroup.Digit, false),
+                new PointFeature(RegisterGroup.Digit, RegisterGroup.Digit, false),
+                new PointFeature(RegisterGroup.Digit, RegisterGroup.Space, true),
+                new PointFeature(RegisterGroup.Uppercase, RegisterGroup.Space, false),
+                new PointFeature(RegisterGroup.Uppercase, RegisterGroup.Uppercase, false),
+                new PointFeature(RegisterGroup.Abbreviation, RegisterGroup.Space, false),
+                new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Space, true),
+                new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Uppercase, true),
+                new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Quote, true),
+                new PointFeature(RegisterGroup.Title, RegisterGroup.Space, false),
+                new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Punctuation, false),
+                new PointFeature(RegisterGroup.Uppercase, RegisterGroup.Punctuation, false),
+                new PointFeature(RegisterGroup.Punctuation, RegisterGroup.Punctuation, false),
+            };
 
-            string text = "  Connecticut  --  $  100  million  of  general obligation capital  appreciation bonds, College  Savings Plan,  1989  Series B, via  a Prudential-Bache  Capital Funding group.";
-       
+            TrainingCenter t = new TrainingCenter();
+
+            var statistics = t.BindData(list);
+
+            double er = (double)statistics.FirstOrDefault(x => x.Type == false).Feature.Where(g => g.Previous == RegisterGroup.Uppercase).Count() / (double)statistics.FirstOrDefault(x => x.Type == false).Count;
+            double fr = (double)statistics.FirstOrDefault(x => x.Type == false).Count / (double)list.Count();
+            double rer = (double)statistics.Select(x => x.Feature.Where(g => g.Previous == RegisterGroup.Uppercase)).Count() / (double)list.Count();
+
+            var rt = er * fr / rer;
+            string text = "Mr. Balbi told a news conference that the submarine had its whole operating system checked two days before setting sail! \"The submarine doesn't sail if that's not done. If it set off... it was because it was in condition to do so,\" he said. Relatives gathered at 2.45 the submarine's naval base on Saturday to take part in a religious ceremony and were joined by hundreds of supporters. Some have reportedly begun mourning their loved ones, fearing it is too late for them to be found alive. On Friday the country's president said an inquiry would be launched to find out the \"truth\" after a week of uncertainty and speculation.";
+
+
             IOManager manager = new ConsoleManager();
 
             IText context = new Text(manager.Read(text));
 
-            ISentenceDetector detector = new SentenceDetector(context, new Normalization(), new BaseRuleConvention());
+            ISentenceDetector detector = new DefaultSentenceDetector(context, new BaseRuleConvention());
             var sentences = detector.DetectEnd();
 
             foreach (var sentence in sentences)

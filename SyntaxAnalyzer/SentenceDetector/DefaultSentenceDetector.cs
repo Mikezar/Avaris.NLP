@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avaris.NLP.Core.Rules;
-using Avaris.NLP.SyntaxAnalyzer.Normalization;
 using Avaris.NLP.Core.Units;
 using Avaris.NLP.Core.Units.Concrete;
 
 namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 {
-    public class SentenceDetector : ISentenceDetector
+    public class DefaultSentenceDetector : ISentenceDetector
     {
         private readonly IText _text;
-        private readonly INormalization _normalization;
         private readonly IRuleConvention _rule;
         private ICollection<int> _positions;
 
@@ -18,19 +16,20 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
         public int PreviousPosition { get; set; }
         public int? ReservedPosition { get; set; }
 
-        public int SpanLength => CurrentPosition - PreviousPosition;
-
-        public SentenceDetector(IText text, INormalization normalization, IRuleConvention rule)
+        public DefaultSentenceDetector(IText text)
         {
             _text = text;
-            _normalization = normalization;
+            _rule = new BaseRuleConvention();
+        }
+
+        public DefaultSentenceDetector(IText text, IRuleConvention rule) : this(text)
+        {
             _rule = rule;
         }
 
         public IEnumerable<ISentence> DetectEnd()
         {
             var positions = DetectPositions().ToArray();
-
 
             for (int i = 0; i < positions.Count(); i++)
             {
@@ -58,39 +57,28 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 
                 if (CurrentPosition == -1) break;
 
-                SymbolAnalyzer(PreviousPosition, CurrentPosition, SpanLength);
+                SymbolAnalyzer(PreviousPosition, CurrentPosition);
             }
 
             return _positions;
         }
 
-        private void SymbolAnalyzer(int initialPosition, int finalPosition, int spanLength)
+        private void SymbolAnalyzer(int initialPosition, int finalPosition)
         {
-            switch (_text.Source[finalPosition])
+            if (Estimator(finalPosition))
             {
-                case '!':
-                case '?':
+                if (ReservedPosition == 0)
                     _positions.Add(initialPosition);
-                    break;
-                case '.':
-                    if (RuleObserver(finalPosition))
-                    {
-                        if (ReservedPosition == 0)
-                            _positions.Add(initialPosition);
-                        else
-                        {
-                            _positions.Add(ReservedPosition.GetValueOrDefault());
-                            ResetReservedPosition();
-                        }
-                    }
-                    else
-                    {
-                        if (ReservedPosition != null && ReservedPosition == 0)
-                            ReservedPosition = initialPosition;
-                    }
-                    break;
-                default:
-                    return;
+                else
+                {
+                    _positions.Add(ReservedPosition.GetValueOrDefault());
+                    ReservedPosition = 0;
+                }
+            }
+            else
+            {
+                if (ReservedPosition != null && ReservedPosition == 0)
+                    ReservedPosition = initialPosition;
             }
         }
 
@@ -100,12 +88,12 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
                 _text.Source.Substring(initialPosition, length).Trim(), initialPosition, length));
         }
 
-        private bool RuleObserver(int index)
+        private bool Estimator(int index)
         {
             var match = _rule.MatchRedundantPunctuation(_text.Source, index);
 
             if (match.Index == index) return true;
-          
+
             return false;
         }
 
@@ -118,11 +106,6 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
             if (offset == -1) return -1;
 
             return _text.Source.IndexOfAny(_text.Separators.ToArray(), offset + 1);
-        }
-
-        private void ResetReservedPosition()
-        {
-            ReservedPosition = 0;
         }
     }
 }
