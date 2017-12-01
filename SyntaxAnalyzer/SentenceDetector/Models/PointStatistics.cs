@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
+namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector.Models
 {
     public class PointStatistics
     {

@@ -88,15 +88,6 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
                 _text.Source.Substring(initialPosition, length).Trim(), initialPosition, length));
         }
 
-        private bool Estimator(int index)
-        {
-            var match = _rule.MatchRedundantPunctuation(_text.Source, index);
-
-            if (match.Index == index) return true;
-
-            return false;
-        }
-
         private int GetCurrentPosition(int index)
         {
             int offset = _text.Source.IndexOfAny(_text.Separators.ToArray(), index);
@@ -106,6 +97,14 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
             if (offset == -1) return -1;
 
             return _text.Source.IndexOfAny(_text.Separators.ToArray(), offset + 1);
+        }
+        protected virtual bool Estimator(int index)
+        {
+            var match = _rule.MatchRedundantPunctuation(_text.Source, index);
+
+            if (match.Index == index) return true;
+
+            return false;
         }
     }
 }

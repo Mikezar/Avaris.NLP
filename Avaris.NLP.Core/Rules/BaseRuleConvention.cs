@@ -1,4 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+using Avaris.NLP.Core.Models;
+using System.Collections.Generic;
+using System;
 
 namespace Avaris.NLP.Core.Rules
 {
@@ -16,27 +19,9 @@ namespace Avaris.NLP.Core.Rules
         private const string Abbreviation = @"\b((?<=[A-Z])\.?){2,}\b";
         private const string DateMonth = @"\b((?<=Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec)[A-Z]{0,})\.?(?=\s?[0-9]{0,})";
 
-
-
-        private const string StandardPointCase = @"(?<=[a-z])[.]\s?";
-        private const string UpperCasePointAheadPunctuation = @"(?<=[A-Z])[.](?=[.,])";
-        private const string LowercasePointAheadPunctuation = @"(?<=[a-z])[.](?=[.,])";
-        private const string PunctuationPointAheadPunctuation = @"[.,]?[.](?=[.,a-z]))";
-        private const string TitlePoint = @"(?<=Mr|Mrs|Ms|Dr)[.]";
-        private const string LowerCasePointAheadUppercase = @"(?<=[a-z])[.?!]\s?(?=[A-Z])";
-        private const string LowerCasePointAheadQuote = "(?<=[a-z])[.?!]\\s?(?=[\"”])";
-        private const string LowercasePointAheadSpace = @"(?<=[a-z])[.?!]\s";
-        private const string AbbreviationDatePoint = @"\b((?<=Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))\.";
-        private const string UpperCasePointAheadUppercase = @"(?<=[A-Z]).(?=[A-Z])";
-        private const string UpperCasePointAheadSpace = @"(?<=[A-Z])[.]";
-        private const string DigitPointAheadDigit = @"(?<=[0-9])[.](?=[0-9])";
-        private const string DigitPointAheadSpace = @"(?<=[0-9])[.]";
-        private const string LowercasePointAheadSymbols = @"(?<=[a-z])[.]\s?(?=[()])";
-
-
         public virtual Match MatchRedundantPunctuation(string input, int index)
             =>
                 new Regex(DefaultRedundantPunctuation).Match(input, index);
-        
+     
     }
 }

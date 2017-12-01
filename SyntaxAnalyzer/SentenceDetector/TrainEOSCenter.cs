@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Avaris.NLP.Core.Models;
 using System.Threading.Tasks;
 
 namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 {
-    public class TrainingCenter
+    public class TrainEOSCenter
     {
 
         public IEnumerable<PointStatistics> BindData(IEnumerable<PointFeature> trainCorpus)
