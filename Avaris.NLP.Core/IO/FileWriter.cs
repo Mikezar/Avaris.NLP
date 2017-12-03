@@ -22,12 +22,12 @@ namespace Avaris.NLP.Core.IO
             return $"{directory.FullName}\\{fileName}.txt";
         }
 
-        private string GetFileName() =>
-            $"AvarisOutput_{DateTime.Today.Day}_{DateTime.Today.Month}_{DateTime.Today.Year}";
+        private string GetFileName(string fileName) =>
+            $"{fileName}_{DateTime.Today.Day}_{DateTime.Today.Month}_{DateTime.Today.Year}";
 
-        public async Task FileWriteAsync(string output)
+        public async Task FileWriteAsync(string output, string fileName)
         {
-            string filename = GetFileName();
+            string filename = GetFileName(fileName);
             string path = CreateDirectory(filename);
 
             using (var writer = new StreamWriter(path, true, Encoding.Default))
@@ -38,7 +38,7 @@ namespace Avaris.NLP.Core.IO
             _logger.Info($"The text was successfully written to the file {filename}.");
         }
 
-        public async Task FileWriteAsync(IEnumerable<string> output)
+        public async Task FileWriteAsync(IEnumerable<string> output, string fileName)
         {
             var builder = new StringBuilder();
 
@@ -48,12 +48,12 @@ namespace Avaris.NLP.Core.IO
                 builder.AppendLine($"{counter++}. {str}");
             }
 
-            await FileWriteAsync(builder.ToString());
+            await FileWriteAsync(builder.ToString(), fileName);
         }
 
-        public void FileWrite(string output)
+        public void FileWrite(string output, string fileName)
         {
-            string filename = GetFileName();
+            string filename = GetFileName(fileName);
             string path = CreateDirectory(filename);
 
             using (var writer = new StreamWriter(path, true, Encoding.Default))
@@ -64,7 +64,7 @@ namespace Avaris.NLP.Core.IO
             _logger.Info($"The text was successfully written to the file {filename}.");
         }
 
-        public void FileWrite(IEnumerable<string> output)
+        public void FileWrite(IEnumerable<string> output, string fileName)
         {
             var builder = new StringBuilder();
 
@@ -74,7 +74,7 @@ namespace Avaris.NLP.Core.IO
                 builder.AppendLine($"{counter++}. {str}");
             }
 
-           FileWrite(builder.ToString());
+           FileWrite(builder.ToString(), fileName);
         }
 
         //public void ChartWriter(Recognizer recognizer, bool status)

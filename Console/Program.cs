@@ -14,6 +14,8 @@ using Avaris.NLP.Core.IO;
 using Avaris.NLP.Core.Units;
 using Avaris.NLP.Core.Units.Concrete;
 using Avaris.NLP.Core.Rules;
+using Avaris.NLP.SyntaxAnalyzer.SentenceDetector.Models;
+using Newtonsoft.Json;
 
 namespace Avaris.NLP.Console
 {
@@ -21,52 +23,43 @@ namespace Avaris.NLP.Console
     {
         static void Main(string[] args)
         {
+            IOManager manager = new ConsoleManager();
+
+            string input = manager.FileReader.TextReadFromFile(@"C:\Users\Mike\Desktop\TestCorpus.txt");
+
+            TrainEOSCenter trainCenter = new TrainEOSCenter();
+
+            var statistics = trainCenter.Train(input);
+
+            //INaiveBayesClassifier classfier = new NaiveBayesClassifier(statistics);
+
+            //classfier.Classify(new PointAttributeGroup ("Uppercase", "Space"), EOSOptions.LaplacianSmoothing);
+
+            //manager.FileWriter.FileWrite(JsonConvert.SerializeObject(statistics), ("Statistics"));
+
+
+
+
             //if (preNormalizing)
             //{
             //   _text.Source = _normalization.PreNormalizationToEOSDetection(_text.Source);
             //}
 
-            //var list = new List<PointFeature>()
-            //{
-            //    new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Symbols, false),
-            //    new PointFeature(RegisterGroup.Digit, RegisterGroup.Digit, false),
-            //    new PointFeature(RegisterGroup.Digit, RegisterGroup.Digit, false),
-            //    new PointFeature(RegisterGroup.Digit, RegisterGroup.Space, true),
-            //    new PointFeature(RegisterGroup.Uppercase, RegisterGroup.Space, false),
-            //    new PointFeature(RegisterGroup.Uppercase, RegisterGroup.Uppercase, false),
-            //    new PointFeature(RegisterGroup.Abbreviation, RegisterGroup.Space, false),
-            //    new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Space, true),
-            //    new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Uppercase, true),
-            //    new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Quote, true),
-            //    new PointFeature(RegisterGroup.Title, RegisterGroup.Space, false),
-            //    new PointFeature(RegisterGroup.Lowercase, RegisterGroup.Punctuation, false),
-            //    new PointFeature(RegisterGroup.Uppercase, RegisterGroup.Punctuation, false),
-            //    new PointFeature(RegisterGroup.Punctuation, RegisterGroup.Punctuation, false),
-            //};
-
-            //TrainingCenter t = new TrainingCenter();
-
-            //var statistics = t.BindData(list);
-
-            //double er = (double)statistics.FirstOrDefault(x => x.Type == false).Feature.Where(g => g.Previous == RegisterGroup.Uppercase).Count() / (double)statistics.FirstOrDefault(x => x.Type == false).Count;
-            //double fr = (double)statistics.FirstOrDefault(x => x.Type == false).Count / (double)list.Count();
-            //double rer = (double)statistics.Select(x => x.Feature.Where(g => g.Previous == RegisterGroup.Uppercase)).Count() / (double)list.Count();
-
-            //var rt = er * fr / rer;
+         
             string text = "Mr. Balbi told a news conference that the submarine had its whole operating system checked two days before setting sail! \"The submarine doesn't sail if that's not done. If it set off... it was because it was in condition to do so,\" he said. Relatives gathered at 2.45 the submarine's naval base on Saturday to take part in a religious ceremony and were joined by hundreds of supporters. Some have reportedly begun mourning their loved ones, fearing it is too late for them to be found alive. On Friday the country's president said an inquiry would be launched to find out the \"truth\" after a week of uncertainty and speculation.";
 
 
-            IOManager manager = new ConsoleManager();
+           
 
             IText context = new Text(manager.Read(text));
 
-            ISentenceDetector detector = new DefaultSentenceDetector(context, new BaseRuleConvention());
+            ISentenceDetector detector = new DefaultSentenceDetector(context);
             var sentences = detector.DetectEnd();
 
-            foreach (var sentence in sentences)
-            {
-                manager.Write(sentence.Source);
-            }
+            //foreach (var sentence in sentences)
+            //{
+            //    manager.Write(sentence.Source);
+            //}
 
 
             //Task<string> output = reader.TextReaderFromFileAsync(@"C:\Users\Mike\Desktop\TestWord.txt");

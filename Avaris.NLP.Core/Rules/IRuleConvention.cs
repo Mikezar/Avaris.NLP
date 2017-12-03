@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Avaris.NLP.Core.Models;
 
 namespace Avaris.NLP.Core.Rules
 {

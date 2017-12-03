@@ -8,7 +8,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 {
     public class DefaultSentenceDetector : ISentenceDetector
     {
-        private readonly IText _text;
+        protected readonly IText _text;
         private readonly IRuleConvention _rule;
         private ICollection<int> _positions;
 
@@ -98,6 +98,7 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector
 
             return _text.Source.IndexOfAny(_text.Separators.ToArray(), offset + 1);
         }
+
         protected virtual bool Estimator(int index)
         {
             var match = _rule.MatchRedundantPunctuation(_text.Source, index);

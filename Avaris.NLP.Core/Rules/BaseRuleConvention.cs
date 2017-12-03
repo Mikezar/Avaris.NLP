@@ -1,7 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Avaris.NLP.Core.Models;
-using System.Collections.Generic;
-using System;
 
 namespace Avaris.NLP.Core.Rules
 {
@@ -13,7 +10,7 @@ namespace Avaris.NLP.Core.Rules
         private const string Currency = "^([$£]?[0-9]+[,.]?[0-9]+[a-z]*)";
         private const string Punctuation = "^([-—.,])";
         private const string SpecialSymbols = "^([%+=])";
-        private const string DefaultRedundantPunctuation = @"(?<![A-Z,Mr,Dr,Ms,Mrs,Ltd])[.?!]\s?(?![0-9,a-z,\,.)])";
+        private const string DefaultRedundantPunctuation = @"(?<!Mr|Ms|Mrs|Dr|Ltd|A-Z|\.|\,)[.?!]\s?(?![0-9,a-z,\,.)])";
         private const string Blanks = @"\s{2,}";
         private const string Symbols = @"[!?]";
         private const string Abbreviation = @"\b((?<=[A-Z])\.?){2,}\b";

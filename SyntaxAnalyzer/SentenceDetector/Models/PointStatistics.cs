@@ -6,8 +6,8 @@ namespace Avaris.NLP.SyntaxAnalyzer.SentenceDetector.Models
     {
         public bool Type { get; set; }
 
-        public  IEnumerable<PointAttributeGroup> Feature { get; set; }
+        public  IEnumerable<AttributeStatistics> Attributes { get; set; }
 
-        public double Count { get; set; }
+        public double TotalCount { get; set; }
     }
 }

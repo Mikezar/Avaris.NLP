@@ -6,6 +6,12 @@
 
         public PointAttributeGroup Feature { get; set; }
 
+
+        public PointFeature()
+        {
+
+        }
+
         public PointFeature(RegisterGroup previous, RegisterGroup next, bool isEOS)
         {
             Feature = new PointAttributeGroup()
